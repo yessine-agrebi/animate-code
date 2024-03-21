@@ -28,13 +28,8 @@ export default function Home() {
   const restart = () => setShow(0);
 
   return (
-    <div className="max-w-x2l h-[500px] bg-black mx-auto py-5 flex items-start justify-start">
-      <button
-        className="text-white bg-gray-700 p-2 rounded-md hover:bg-gray-600"
-        onClick={() => (atMax ? restart() : setShow((prev) => prev + 1))}
-      >
-        {atMax ? "Restart" : "Show More"}
-      </button>
+    <div className="w-full bg-black flex flex-col items-center justify-center gap-3">
+    <div className="max-w-[80%] h-[500px] mx-auto py-5">
       <div className="relative group">
         <Code code={firstPart} show={true} animated={true} />
         <Code code={second} show={show > 0} animated={true} />
@@ -43,5 +38,12 @@ export default function Home() {
         <Code code={fifth} show={show > 3} animated={true} />
       </div>
     </div>
+    <button
+    className="text-white bg-gray-700 p-2 rounded-md hover:bg-gray-600"
+    onClick={() => (atMax ? restart() : setShow((prev) => prev + 1))}
+  >
+    {atMax ? "Restart" : "Show More"}
+  </button>
+  </div>
   );
 }

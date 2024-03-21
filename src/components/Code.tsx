@@ -35,7 +35,7 @@ const Code: FC<CodeProps> = ({
         }, 30)
         return () => clearInterval(intervalId)
         },
-        animationDelay ? animationDelay : 50)
+        animationDelay ? animationDelay : 150)
     }
     }, [initialText, show])
     useEffect(() => {
