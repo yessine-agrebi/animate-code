@@ -23,6 +23,7 @@ const Code: FC<CodeProps> = ({
     const initialText = codeLast ? code + codeLast : code;
     const [text, setText] = useState(animated ? '' : initialText);
     useEffect(() => {
+        if (show) {
         let i = 0;
         setTimeout(() => {
         const intervalId = setInterval(() => {
@@ -34,7 +35,8 @@ const Code: FC<CodeProps> = ({
         }, 30)
         return () => clearInterval(intervalId)
         },
-        animationDelay ? animationDelay : 150)
+        animationDelay ? animationDelay : 50)
+    }
     }, [initialText, show])
     useEffect(() => {
         if (newTextToWrite) {
@@ -56,6 +58,7 @@ const Code: FC<CodeProps> = ({
             }, 0)
         }
     }, [newTextToWrite])
+    if(!show) return null
   return (
     <Highlight 
     theme={themes.nightOwl}
@@ -77,11 +80,12 @@ const Code: FC<CodeProps> = ({
             >
                 {tokens.map((line, i) => (
                     <div
-                    {...getLineProps({line, key: i})}
+                    {...getLineProps({line})}
                     style={{position: 'relative'}}
+                    key={i}
                     >    
                         {line.map((token, key) => (
-                            <span {...getTokenProps({token, key})} />
+                            <span key={key} {...getTokenProps({token})} />
                         ))}
                     </div>
                 ))}
