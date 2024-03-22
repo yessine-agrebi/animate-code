@@ -1,50 +1,57 @@
 "use client";
-import Code from "@/components/Code";
-import { useState } from "react";
+import React, { useState, useRef, ChangeEvent } from "react";
+import { Highlight, themes } from "prism-react-renderer";
 
 export default function Home() {
-  const [show, setShow] = useState(0);
-  const atMax = show > 4;
-  const restart = () => setShow(0);
-  const [code, setCode] = useState("");
-  const firstPart = `const UserProfile: React.FC<UserProfile> = ({ user }) => {`;
-  const second = ` 
-    return (
-      <div>
+  const [code, setCode] = useState(""); // State to store the code
+  const textareaRef = useRef<HTMLTextAreaElement>(null); // Ref for the textarea
 
-      `;
+  // Function to handle changes in the textarea
+  const handleCodeChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setCode(event.target.value); // Save the edited code to state
+  };
 
-  const third = `
-  
-          <h2>{user.name}</h2>`;
-  const fourth = `
-
-          <p>Bio: {user.bio}</p>`;
-  const fifth = `
-
-          <p>Followers: {user.followers}</p>
-      </div>
-    );  
-`;
-  
+  // Function to focus on the hidden textarea when a key is pressed
+  const handleKeyDown = () => {
+    textareaRef.current?.focus(); // Focus on the hidden textarea
+  };
 
   return (
     <div className="w-full flex flex-col items-center justify-center gap-3">
-    <div className="w-[80%] h-[500px] bg-black rounded-md mt-6">
-      <div className="relative group mx-4 py-3">
-        <Code code={firstPart} show={show > 0} animated={true} />
-        <Code code={second} show={show > 1} animated={true} />
-        <Code code={third} show={show > 2} animated={true} />
-        <Code code={fourth} show={show > 3} animated={true} />
-        <Code code={fifth} show={show > 4} animated={true} />
+      <div className="min-w-[60%] h-[500px] bg-black rounded-md mt-6 relative">
+        <textarea
+          ref={textareaRef} // Set ref for the textarea
+          value={code} // Value bound to the code state
+          onChange={handleCodeChange} // Handle code changes
+          onKeyDown={handleKeyDown} // Handle keydown events
+          className="absolute top-0 left-0 opacity-0 w-full h-full resize-none bg-black z-10"
+          aria-hidden="false" // Hide the textarea from screen readers
+        />
+        <Highlight theme={themes.nightOwl} code={code} language="jsx">
+          {({ className, style, tokens, getLineProps, getTokenProps }) => (
+            <pre
+              className={
+                className + " transition-all duration-700 no-scrollbar"
+              }
+              style={{
+                ...style,
+                background: "transparent",
+                padding: "0.5rem",
+                width: "100%",
+                minHeight: "300px", // Set your desired minimum height
+              }}
+            >
+              {tokens.map((line, i) => (
+                <div {...getLineProps({ line })} key={i}>
+                  {line.map((token, key) => (
+                    <span key={key} {...getTokenProps({ token })} />
+                  ))}
+                </div>
+              ))}
+            </pre>
+          )}
+        </Highlight>
       </div>
     </div>
-    <button
-    className="text-white bg-gray-700 p-2 rounded-md hover:bg-gray-600"
-    onClick={() => (atMax ? restart() : setShow((prev) => prev + 1))}
-  >
-    {atMax ? "Restart" : (show === 0 ? "Start" : "Next")}
-  </button>
-  </div>
   );
 }

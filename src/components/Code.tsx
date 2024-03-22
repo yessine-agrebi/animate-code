@@ -9,6 +9,7 @@ type CodeProps = {
   code: string;
   show: boolean;
   maxHeight?: number;
+  className?: string;
 };
 
 const Code: FC<CodeProps> = ({
@@ -19,51 +20,13 @@ const Code: FC<CodeProps> = ({
   codeLast,
   newTextToWrite,
   maxHeight,
+  className,
 }) => {
-  const initialText = codeLast ? code + codeLast : code;
-  const [text, setText] = useState(animated ? "" : initialText);
-  useEffect(() => {
-    if (show) {
-      let i = 0;
-      setTimeout(
-        () => {
-          const intervalId = setInterval(() => {
-            setText(initialText.slice(0, i));
-            i++;
-            if (i > initialText.length) {
-              clearInterval(intervalId);
-            }
-          }, 30);
-          return () => clearInterval(intervalId);
-        },
-        animationDelay ? animationDelay : 150
-      );
-    }
-  }, [initialText, show]);
-  useEffect(() => {
-    if (newTextToWrite) {
-      let i = 0;
-      setTimeout(() => {
-        const intervalId = setInterval(() => {
-          if (codeLast) {
-            setText(code + newTextToWrite.slice(0, i) + codeLast);
-          } else {
-            setText(code + newTextToWrite.slice(0, i));
-          }
-          i++;
-          if (i > newTextToWrite.length) {
-            clearInterval(intervalId);
-          }
-        }, 50);
-        return () => clearInterval(intervalId);
-      }, 0);
-    }
-  }, [newTextToWrite]);
-  if (!show) return null;
   return (
-    <Highlight theme={themes.nightOwl} code={text} language="tsx">
+    
+    <Highlight theme={themes.nightOwl} code={code} language="tsx">
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
-        <pre
+        <div
           className={className + " transition-all duration-700 no-scrollbar"}
           style={{
             ...style,
@@ -87,7 +50,8 @@ const Code: FC<CodeProps> = ({
               ))}
             </div>
           ))}
-        </pre>
+          
+        </div>
       )}
     </Highlight>
   );
