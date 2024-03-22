@@ -7,26 +7,24 @@ export default function Home() {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // State to store the current slide index
   const textareaRef = useRef<HTMLTextAreaElement>(null); // Ref for the textarea
 
-  // Function to handle changes in the textarea
   const handleCodeChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const updatedSlides = [...slides]; // Copy the slides array
     updatedSlides[currentSlideIndex] = event.target.value; // Update the current slide with the edited code
     setSlides(updatedSlides); // Update the slides state
   };
 
-  // Function to focus on the hidden textarea when a key is pressed
   const handleKeyDown = () => {
     textareaRef.current?.focus(); // Focus on the hidden textarea
   };
 
-  //function to handle new slide with the current content and save the current slide to the history
-  const handleNewSlide = () => {
+  const handleNextSlide = () => {
     const updatedSlides = [...slides]; // Copy the slides array
     updatedSlides.push(updatedSlides[currentSlideIndex]); // Add the current slide to the slides array
     setSlides(updatedSlides); // Update the slides state
+    console.log(updatedSlides);
     setCurrentSlideIndex(currentSlideIndex + 1); // Update the current slide index
   };
-  //function to back to the previous slide
+
   const handlePreviousSlide = () => {
     if (currentSlideIndex > 0) {
       setCurrentSlideIndex(currentSlideIndex - 1);
@@ -50,8 +48,9 @@ export default function Home() {
 
         <CodeBlock code={slides[currentSlideIndex]} />
       </div>
+      <div className="flex align-center gap-3">
       <button
-        onClick={handleNewSlide}
+        onClick={handleNextSlide}
         className="bg-blue-500 text-white px-4 py-2 rounded-md"
       >
         Next Slide
@@ -62,6 +61,8 @@ export default function Home() {
       >
         Previous Slide
       </button>
+      </div>
+      
     </div>
   );
 }
