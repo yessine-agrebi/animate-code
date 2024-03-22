@@ -11,11 +11,9 @@
   "dependencies": {
     "next": "14.1.4",
     "prism-react-renderer": "^2.3.1",
-    "prismjs": "^1.29.0",
     "react": "^18",
-    "react-dom": "^18",
-    "react-prism-editor": "^1.1.2",
-    "react-simple-code-editor": "^0.13.1"
+    "react-dom": "^18"
+    
   },
   "devDependencies": {
     "@types/node": "^20",
