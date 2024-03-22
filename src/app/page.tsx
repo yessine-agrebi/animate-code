@@ -1,14 +1,17 @@
 "use client";
-import React, { useState, useRef, ChangeEvent } from "react";
-import { Highlight, themes } from "prism-react-renderer";
+import React, { ChangeEvent, useRef, useState } from "react";
+import CodeBlock from "@/components/CodeBlock";
 
 export default function Home() {
-  const [code, setCode] = useState(""); // State to store the code
+  const [slides, setSlides] = useState<string[]>([""]); // State to store the code
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // State to store the current slide index
   const textareaRef = useRef<HTMLTextAreaElement>(null); // Ref for the textarea
 
   // Function to handle changes in the textarea
   const handleCodeChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setCode(event.target.value); // Save the edited code to state
+    const updatedSlides = [...slides]; // Copy the slides array
+    updatedSlides[currentSlideIndex] = event.target.value; // Update the current slide with the edited code
+    setSlides(updatedSlides); // Update the slides state
   };
 
   // Function to focus on the hidden textarea when a key is pressed
@@ -16,42 +19,49 @@ export default function Home() {
     textareaRef.current?.focus(); // Focus on the hidden textarea
   };
 
+  //function to handle new slide with the current content and save the current slide to the history
+  const handleNewSlide = () => {
+    const updatedSlides = [...slides]; // Copy the slides array
+    updatedSlides.push(updatedSlides[currentSlideIndex]); // Add the current slide to the slides array
+    setSlides(updatedSlides); // Update the slides state
+    setCurrentSlideIndex(currentSlideIndex + 1); // Update the current slide index
+  };
+  //function to back to the previous slide
+  const handlePreviousSlide = () => {
+    if (currentSlideIndex > 0) {
+      setCurrentSlideIndex(currentSlideIndex - 1);
+    }
+  };
+
   return (
     <div className="w-full flex flex-col items-center justify-center gap-3">
       <div className="min-w-[60%] h-[500px] bg-black rounded-md mt-6 relative">
-        <textarea
-          ref={textareaRef} // Set ref for the textarea
-          value={code} // Value bound to the code state
-          onChange={handleCodeChange} // Handle code changes
-          onKeyDown={handleKeyDown} // Handle keydown events
-          className="absolute top-0 left-0 opacity-0 w-full h-full resize-none bg-black z-10"
-          aria-hidden="false" // Hide the textarea from screen readers
-        />
-        <Highlight theme={themes.nightOwl} code={code} language="jsx">
-          {({ className, style, tokens, getLineProps, getTokenProps }) => (
-            <pre
-              className={
-                className + " transition-all duration-700 no-scrollbar"
-              }
-              style={{
-                ...style,
-                background: "transparent",
-                padding: "0.5rem",
-                width: "100%",
-                minHeight: "300px", // Set your desired minimum height
-              }}
-            >
-              {tokens.map((line, i) => (
-                <div {...getLineProps({ line })} key={i}>
-                  {line.map((token, key) => (
-                    <span key={key} {...getTokenProps({ token })} />
-                  ))}
-                </div>
-              ))}
-            </pre>
-          )}
-        </Highlight>
+        {slides.map((slide, index) => (
+          <textarea
+            key={index}
+            ref={index === currentSlideIndex ? textareaRef : null} // Set ref for the active textarea
+            value={slide} // Value bound to the code state
+            onChange={handleCodeChange} // Handle code changes
+            onKeyDown={handleKeyDown} // Handle keydown events
+            className="absolute top-0 left-0 opacity-0 w-full h-full bg-transparent z-10" // Show the textarea
+            aria-hidden="false" // Hide the textarea from screen readers
+          />
+        ))}
+
+        <CodeBlock code={slides[currentSlideIndex]} />
       </div>
+      <button
+        onClick={handleNewSlide}
+        className="bg-blue-500 text-white px-4 py-2 rounded-md"
+      >
+        Next Slide
+      </button>
+      <button
+        onClick={handlePreviousSlide}
+        className="bg-blue-500 text-white px-4 py-2 rounded-md"
+      >
+        Previous Slide
+      </button>
     </div>
   );
 }
