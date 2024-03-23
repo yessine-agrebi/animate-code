@@ -22,30 +22,27 @@ export default function Home() {
     `const sayHello () {
   console.log('Hello World');
 }`,
-  ]); // State to store the code
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // State to store the current slide index
+  ]); 
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0); 
 
   const handleCodeChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedSlides = [...slides]; // Copy the slides array
-    updatedSlides[currentSlideIndex] = event.target.value; // Update the current slide with the new code
-    setSlides(updatedSlides); // Update the slides state
+    const updatedSlides = [...slides]; 
+    updatedSlides[currentSlideIndex] = event.target.value; 
+    setSlides(updatedSlides); 
   };
-
+  
   const handleNewSlide = () => {
-    setSlides([...slides, ""]); // Add a new empty slide to the slides array
-    setCurrentSlideIndex(slides.length); // Update the current slide index to the new slide
+    setSlides([...slides, ""]); 
+    setCurrentSlideIndex(slides.length); 
   };
   const handleSetCurrentSlideIndex = (index: number) => {
-    setCurrentSlideIndex(index); // Update the current slide index
+    setCurrentSlideIndex(index); 
   };
   const handleDeleteSlide = (index: number) => {
-    const updatedSlides = slides.filter((_, i) => i !== index); // Filter out the slide to delete
-    setSlides(updatedSlides); // Update the slides state
-    setCurrentSlideIndex(updatedSlides.length); // Update the current slide index to the first slide
+    const updatedSlides = slides.filter((_, i) => i !== index); 
+    setSlides(updatedSlides); 
+    setCurrentSlideIndex(updatedSlides.length);
   };
-
-  
-
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center bg-slate-800 gap-12">
       <div className="min-w-[60%] h-1/2">
