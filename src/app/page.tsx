@@ -1,8 +1,13 @@
 "use client";
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import CodeEditor from "@uiw/react-textarea-code-editor";
-import CodeBlock from "@/components/CodeBlock";
-import { MinusIcon, PlusCircledIcon, TrashIcon } from "@radix-ui/react-icons";
+import React, { ChangeEvent, useState } from "react";
+import dynamic from "next/dynamic";
+import "@uiw/react-textarea-code-editor/dist.css";
+
+const CodeEditor = dynamic(
+  () => import("@uiw/react-textarea-code-editor").then((mod) => mod.default),
+  { ssr: false }
+);
+import { PlusCircledIcon, TrashIcon } from "@radix-ui/react-icons";
 import {
   VscAzure,
   VscChromeClose,
@@ -19,17 +24,11 @@ export default function Home() {
 }`,
   ]); // State to store the code
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // State to store the current slide index
-  const [textAreaClicked, setTextAreaClicked] = useState(false); // State to store the current slide index
-  const textareaRef = useRef<HTMLTextAreaElement>(null); // Ref for the textarea
 
   const handleCodeChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const updatedSlides = [...slides]; // Copy the slides array
     updatedSlides[currentSlideIndex] = event.target.value; // Update the current slide with the new code
     setSlides(updatedSlides); // Update the slides state
-  };
-
-  const handleKeyDown = () => {
-    textareaRef.current?.focus(); // Focus on the hidden textarea
   };
 
   const handleNewSlide = () => {
@@ -48,9 +47,9 @@ export default function Home() {
   
 
   return (
-    <div className="w-full h-[100vh] flex flex-col items-center justify-center gap-2 bg-slate-800">
-      <div className="min-w-[60%] h-[500px] bg-slate-950 rounded-lg mt-6 relative">
-        <div className="w-full h-[50px] flex justify-between items-center px-4 text-lg text-gray-400">
+    <div className="w-full h-screen flex flex-col items-center justify-center bg-slate-800 gap-12">
+      <div className="min-w-[60%] h-1/2">
+        <div className="w-full h-[50px] bg-[#161b22] flex justify-between items-center px-4 text-lg text-gray-400 rounded-t-lg">
           <VscAzure />
           <div className="flex gap-3 items-center">
             <VscCircleFilled color="blue" className="mt-1" />
@@ -68,14 +67,15 @@ export default function Home() {
           onChange={handleCodeChange}
           padding={15}
           style={{
-            backgroundColor: "transparent",
             fontFamily:
               "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
             fontSize: "15px",
           }}
+          data-color-mode="dark"
+          className="w-full h-full rounded-b-lg"
         />
       </div>
-      <div className="min-w-[60%] h-[120px] bg-slate-950 rounded-md mt-6 relative flex items-center gap-2">
+      <div className="min-w-[60%] h-1/4 bg-[#161b22] rounded-md mt-6 relative flex items-center gap-2">
         <button onClick={handleNewSlide}>
           <PlusCircledIcon className="w-8 h-8 text-white ml-2" />
         </button>
@@ -83,11 +83,11 @@ export default function Home() {
           slides.map((slide, index) => (
             <div
               key={index}
-              className="w-[100px] h-[100px] bg-gray-900 rounded-lg text-[5px] hover:cursor-pointer relative"
+              className="w-[100px] h-[100px] rounded-lg hover:cursor-pointer relative"
               onClick={() => handleSetCurrentSlideIndex(index)}
             >
               <button
-                className="flex items-center justify-center w-8 h-8 absolute top-0 right-0"
+                className="flex items-center justify-center w-8 h-8 absolute top-0 right-0 z-10"
                 onClick={(event) => {
                   event.stopPropagation(); // Prevent event from bubbling up
                   handleDeleteSlide(index);
@@ -99,30 +99,17 @@ export default function Home() {
                 value={slide}
                 language="tsx"
                 style={{
-                  backgroundColor: "transparent",
                   fontFamily:
                     "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
                   fontSize: "5px",
-                  width: "100%",
-                  height: "100%",
                   pointerEvents: "none",
                 }}
+                data-color-mode="dark"
+                className="w-full h-full rounded-lg border-2 border-gray-100"
               />
             </div>
           ))}
       </div>
-      {/* <button
-        onClick={handleNextSlide}
-        className="bg-blue-500 text-white px-4 py-2 rounded-md"
-      >
-        Next Slide
-      </button>
-      <button
-        onClick={handlePreviousSlide}
-        className="bg-blue-500 text-white px-4 py-2 rounded-md"
-      >
-        Previous Slide
-      </button> */}
     </div>
   );
 }
